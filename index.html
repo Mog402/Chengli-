@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成力 - HSK 1 တရုတ်စာသင်ကြားရေး</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@300;400;700;900&family=Noto+Sans+SC:wght@300;400;700;900&family=Noto+Serif+SC:wght@400;700&display=swap');
+:root {
+  --bg:#0D0014;--card:#160022;--card2:#1A0030;--border:#3D0060;
+  --red:#FF2D55;--orange:#FF6B00;--yellow:#FFD60A;--green:#30D158;
+  --cyan:#32ADE6;--purple:#BF5AF2;--text:#F5F0FF;--muted:#9980B3;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans Myanmar','Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.bg-anim{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 20% 50%,#2D0050 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,#001A3D 0%,transparent 50%),#0D0014;}
+.bg-anim::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,214,10,0.07) 1px,transparent 0);background-size:40px 40px;animation:gridMove 20s linear infinite;}
+@keyframes gridMove{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+.app-wrapper{position:relative;z-index:1;}
+header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(13,0,20,0.85);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Noto Serif SC',serif;font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,#FFD60A,#FF6B00,#FF2D55);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px;filter:drop-shadow(0 0 20px rgba(255,214,10,0.4));}
+.logo-sub{font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;display:block;margin-top:-4px;-webkit-text-fill-color:var(--muted);}
+.stats-bar{display:flex;gap:10px;align-items:center;}
+.stat-pill{background:rgba(255,214,10,0.1);border:1px solid rgba(255,214,10,0.3);border-radius:20px;padding:4px 10px;font-size:0.72rem;color:var(--yellow);display:flex;align-items:center;gap:5px;}
+.nav-tabs{display:flex;gap:4px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(61,0,96,0.5);}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.tab-btn{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Noto Sans Myanmar',sans-serif;font-size:0.75rem;cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+.tab-btn.active,.tab-btn:hover{background:rgba(191,90,242,0.2);border-color:var(--purple);color:var(--text);}
+.main{padding:16px;}
+.section{display:none;}
+.section.active{display:block;}
+.hero-word-card{background:linear-gradient(135deg,#1A003A,#0D0025);border:1px solid var(--border);border-radius:24px;padding:28px 20px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden;}
+.chinese-char{font-family:'Noto Serif SC',serif;font-size:6rem;line-height:1;background:linear-gradient(135deg,#fff,#BF5AF2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 30px rgba(191,90,242,0.5));margin-bottom:8px;cursor:pointer;}
+.pinyin-display{font-size:1.6rem;color:var(--yellow);font-weight:700;letter-spacing:4px;margin-bottom:8px;}
+.tone-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:0.75rem;margin-bottom:10px;border:1px solid;}
+.tone-1{color:#32ADE6;border-color:#32ADE6;background:rgba(50,173,230,0.1);}
+.tone-2{color:#30D158;border-color:#30D158;background:rgba(48,209,88,0.1);}
+.tone-3{color:#FF9500;border-color:#FF9500;background:rgba(255,149,0,0.1);}
+.tone-4{color:#FF2D55;border-color:#FF2D55;background:rgba(255,45,85,0.1);}
+.tone-0{color:#9980B3;border-color:#9980B3;background:rgba(153,128,179,0.1);}
+.meaning-my{font-size:1.1rem;color:var(--text);margin-bottom:4px;}
+.meaning-en{font-size:0.85rem;color:var(--muted);margin-bottom:16px;}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:8px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--yellow));border-radius:2px;transition:width 0.3s;}
+.card-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}
+.btn{padding:10px 18px;border-radius:20px;border:none;cursor:pointer;font-family:'Noto Sans Myanmar',sans-serif;font-size:0.82rem;transition:all 0.2s;color:var(--text);}
+.btn-prev{background:rgba(255,255,255,0.08);border:1px solid var(--border);}
+.btn-audio{background:linear-gradient(135deg,#FF375F,#FF6B00);color:#fff;font-weight:700;}
+.btn-next{background:linear-gradient(135deg,var(--yellow),var(--orange));color:#000;font-weight:700;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;}
+.info-card h3{font-size:0.68rem;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:8px;}
+.info-card p{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+.stroke-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px;}
+.stroke-section h3{font-size:0.68rem;letter-spacing:2px;color:var(--purple);text-transform:uppercase;margin-bottom:12px;}
+.stroke-steps{display:flex;gap:8px;flex-wrap:wrap;}
+.stroke-step{width:56px;height:56px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:1.8rem;color:rgba(255,255,255,0.7);position:relative;}
+.stroke-step .snum{position:absolute;bottom:2px;right:4px;font-size:0.5rem;color:var(--muted);}
+.example-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;}
+.ex-cn{font-family:'Noto Serif SC',serif;font-size:1.1rem;color:var(--text);margin-bottom:3px;}
+.ex-py{font-size:0.8rem;color:var(--yellow);margin-bottom:3px;}
+.ex-my{font-size:0.82rem;color:var(--muted);}
+.search-bar{width:100%;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'Noto Sans Myanmar',sans-serif;font-size:0.88rem;margin-bottom:12px;outline:none;}
+.search-bar::placeholder{color:var(--muted);}
+.category-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.cat-btn{padding:6px 12px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Noto Sans Myanmar',sans-serif;font-size:0.72rem;cursor:pointer;transition:all 0.2s;}
+.cat-btn.active,.cat-btn:hover{background:rgba(191,90,242,0.2);border-color:var(--purple);color:var(--text);}
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.vocab-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:all 0.2s;text-align:center;}
+.vocab-card:hover,.vocab-card.known{border-color:var(--purple);}
+.vocab-card.known{background:rgba(191,90,242,0.08);}
+.vc-char{font-family:'Noto Serif SC',serif;font-size:2rem;margin-bottom:4px;}
+.vc-py{font-size:0.75rem;color:var(--yellow);margin-bottom:2px;}
+.vc-my{font-size:0.72rem;color:var(--muted);}
+.score-display{display:flex;gap:20px;justify-content:center;margin-bottom:16px;}
+.score-item{text-align:center;}
+.score-num{font-size:2rem;font-weight:700;line-height:1;}
+.score-label{font-size:0.68rem;color:var(--muted);letter-spacing:1px;}
+.quiz-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px;text-align:center;}
+.quiz-type{font-size:0.68rem;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.quiz-question{font-family:'Noto Serif SC',serif;font-size:3rem;margin-bottom:8px;}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.quiz-opt{padding:14px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:'Noto Sans Myanmar',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.5;}
+.quiz-opt:hover{border-color:var(--purple);background:rgba(191,90,242,0.1);}
+.quiz-opt.correct{border-color:var(--green);background:rgba(48,209,88,0.15);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(255,45,85,0.15);color:var(--red);}
+.quiz-opt:disabled{cursor:default;}
+.write-word-card{background:linear-gradient(135deg,#1A003A,#0D0025);border:1px solid var(--border);border-radius:20px;padding:20px;text-align:center;margin-bottom:14px;}
+.write-char{font-family:'Noto Serif SC',serif;font-size:4rem;line-height:1;background:linear-gradient(135deg,#fff,#FFD60A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(255,214,10,0.4));margin-bottom:6px;}
+.rep-dots{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;max-width:260px;margin:8px auto;}
+.rep-dot{width:15px;height:15px;border-radius:50%;border:2px solid var(--border);transition:all 0.3s;}
+.rep-dot.done{background:var(--green);border-color:var(--green);}
+.rep-dot.current{border-color:var(--yellow);}
+.audio-dots{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;max-width:220px;margin:6px auto;}
+.audio-dot{width:11px;height:11px;border-radius:50%;border:1.5px solid rgba(50,173,230,0.25);}
+.audio-dot.heard{background:var(--cyan);border-color:var(--cyan);}
+.canvas-wrap{position:relative;display:flex;justify-content:center;}
+.ref-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Noto Serif SC',serif;font-size:180px;color:rgba(255,214,10,0.07);pointer-events:none;z-index:1;user-select:none;line-height:1;display:none;}
+#writeCanvas{border:2px solid var(--border);border-radius:14px;background:#0A0018;touch-action:none;cursor:crosshair;max-width:100%;display:block;}
+.write-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0;}
+.feedback-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;text-align:center;display:none;}
+.session-complete{display:none;background:linear-gradient(135deg,rgba(48,209,88,0.12),rgba(255,214,10,0.08));border:1px solid var(--green);border-radius:20px;padding:20px;margin-bottom:14px;text-align:center;}
+.practiced-chip{background:rgba(191,90,242,0.12);border:1px solid rgba(191,90,242,0.3);border-radius:8px;padding:4px 10px;font-family:'Noto Serif SC',serif;font-size:1.1rem;cursor:pointer;display:inline-block;margin:3px;}
+.prog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;}
+.prog-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;text-align:center;}
+.prog-num{font-size:2.2rem;font-weight:900;line-height:1;margin-bottom:4px;}
+.prog-label{font-size:0.68rem;color:var(--muted);}
+.ring-chart{width:110px;height:110px;margin:16px auto;border-radius:50%;background:conic-gradient(var(--purple) 0%,var(--yellow) var(--pct,0%),var(--border) var(--pct,0%));display:flex;align-items:center;justify-content:center;}
+.ring-inner{width:74px;height:74px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:var(--yellow);}
+.known-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:12px;}
+.known-chip{background:rgba(48,209,88,0.08);border:1px solid rgba(48,209,88,0.25);border-radius:12px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.known-chip:hover{border-color:var(--red);}
+.known-chip .kc-char{font-family:'Noto Serif SC',serif;font-size:1.6rem;margin-bottom:2px;}
+.known-chip .kc-py{font-size:0.68rem;color:var(--yellow);}
+.known-chip .kc-my{font-size:0.65rem;color:var(--muted);}
+@keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-100px) scale(0);opacity:0;}}
+.confetti-piece{position:fixed;pointer-events:none;z-index:9999;font-size:1.5rem;animation:floatUp 1.5s ease forwards;}
+@keyframes feedbackPop{0%{transform:scale(0.8);opacity:0;}60%{transform:scale(1.05);}100%{transform:scale(1);opacity:1;}}
+.feedback-anim{animation:feedbackPop 0.4s ease forwards;}
+</style>
+</head>
+<body>
+<div class="bg-anim"></div>
+<div class="app-wrapper">
+<header>
+  <div>
+    <div class="logo">成力</div>
+    <span class="logo-sub">HSK 1 • တရုတ်စာ သင်ကြားရေး</span>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-pill">✓ <span id="knownNum">0</span> /150</div>
+    <div class="stat-pill">🔥 <span id="streakNum">0</span></div>
+  </div>
+</header>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('learn',this)">📖 လေ့လာမည်</button>
+  <button class="tab-btn" onclick="showTab('vocab',this)">📚 စကားလုံးများ</button>
+  <button class="tab-btn" onclick="showTab('quiz',this)">🎯 စစ်ဆေးမည်</button>
+  <button class="tab-btn" onclick="showTab('write',this)">✍️ ရေးလေ့ကျင့်မည်</button>
+  <button class="tab-btn" onclick="showTab('known',this)">⭐ သိပြီးသော</button>
+  <button class="tab-btn" onclick="showTab('progress',this)">📊 တိုးတက်မှု</button>
+</div>
+
+<div class="main">
+<section id="sec-learn" class="section active">
+  <div class="hero-word-card">
+    <div class="chinese-char" id="heroChar" onclick="playAudio()">爱</div>
+    <div class="pinyin-display" id="heroPinyin">ài</div>
+    <div id="heroBadge" class="tone-badge tone-4">စတုတ္ထ Tone (4)</div>
+    <div class="meaning-my" id="heroMy">ချစ်ခြင်း / ချစ်သည်</div>
+    <div class="meaning-en" id="heroEn">love / to love</div>
+    <div class="progress-bar"><div class="progress-fill" id="learnProgress" style="width:1%"></div></div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:12px" id="learnCounter">စကားလုံး ၁/၁၅၀</div>
+    <div class="card-actions">
+      <button class="btn btn-prev" onclick="prevWord()">← နောက်သို့</button>
+      <button class="btn btn-audio" onclick="playAudio()">🔊 အသံနားထောင်ပါ</button>
+      <button class="btn btn-next" onclick="nextWord()">ရှေ့သို့ →</button>
+    </div>
+    <button class="btn" style="background:rgba(48,209,88,0.15);border:1px solid var(--green);color:var(--green);font-size:0.78rem" onclick="markKnown()">✓ သိပြီ</button>
+  </div>
+  <div class="info-grid">
+    <div class="info-card"><h3>🔍 ဇာစ်မြစ်</h3><p id="etymology">-</p></div>
+    <div class="info-card"><h3>📝 အမျိုးအစား</h3><p id="category">-</p><br><h3>🎯 အသုံးပြုနည်း</h3><p id="usage">-</p></div>
+  </div>
+  <div class="stroke-section">
+    <h3>✏️ ကြောင်းဆွဲနည်း</h3>
+    <div class="stroke-steps" id="strokeSteps"></div>
+    <p style="font-size:0.72rem;color:var(--muted);margin-top:10px">💡 ဘယ်မှညာ • အပေါ်မှအောက်</p>
+  </div>
+  <div id="exampleSentences"></div>
+</section>
+<section id="sec-vocab" class="section">
+  <input class="search-bar" type="text" placeholder="🔍 ရှာဖွေပါ..." id="searchInput" oninput="renderVocab()">
+  <div class="category-filters">
+    <button class="cat-btn active" onclick="setCat('all',this)">အားလုံး (150)</button>
+    <button class="cat-btn" onclick="setCat('pronoun',this)">နာမ်စား</button>
+    <button class="cat-btn" onclick="setCat('verb',this)">ကြိယာ</button>
+    <button class="cat-btn" onclick="setCat('noun',this)">နာမ်</button>
+    <button class="cat-btn" onclick="setCat('number',this)">နံပါတ်</button>
+    <button class="cat-btn" onclick="setCat('time',this)">အချိန်</button>
+    <button class="cat-btn" onclick="setCat('question',this)">မေးခွန်း</button>
+    <button class="cat-btn" onclick="setCat('adjective',this)">နာမဝိသေသန</button>
+    <button class="cat-btn" onclick="setCat('particle',this)">ကြိယာဝိဘတ်</button>
+  </div>
+  <div class="vocab-grid" id="vocabGrid"></div>
+</section>
+
+<section id="sec-quiz" class="section">
+  <div class="score-display">
+    <div class="score-item"><div class="score-num" id="qScore" style="color:var(--green)">0</div><div class="score-label">မှန်သည်</div></div>
+    <div class="score-item"><div class="score-num" id="qTotal" style="color:var(--muted)">0</div><div class="score-label">စုစုပေါင်း</div></div>
+    <div class="score-item"><div class="score-num" id="qStreak" style="color:var(--yellow)">0</div><div class="score-label">ဆက်တိုက်</div></div>
+  </div>
+  <div class="quiz-card">
+    <div class="quiz-type" id="quizType">-</div>
+    <div class="quiz-question" id="quizQ">-</div>
+    <div style="font-size:0.88rem;color:var(--yellow);margin-bottom:16px" id="quizHint"></div>
+    <div class="quiz-options" id="quizOpts"></div>
+    <div id="quizFeedback" style="margin-top:14px;font-size:0.88rem;font-family:'Noto Sans Myanmar',sans-serif"></div>
+  </div>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <button class="btn" style="background:rgba(50,173,230,0.15);border:1px solid var(--cyan);color:var(--cyan)" onclick="setQuizType('cn-to-my')">🀄 တရုတ်→မြန်မာ</button>
+    <button class="btn" style="background:rgba(191,90,242,0.15);border:1px solid var(--purple);color:var(--purple)" onclick="setQuizType('my-to-cn')">🇲🇲 မြန်မာ→တရုတ်</button>
+    <button class="btn" style="background:rgba(255,149,0,0.15);border:1px solid var(--orange);color:var(--orange)" onclick="setQuizType('pinyin')">🔤 Pinyin</button>
+  </div>
+</section>
+<section id="sec-write" class="section">
+  <div class="write-word-card">
+    <div style="font-size:0.62rem;letter-spacing:3px;color:var(--orange);text-transform:uppercase;margin-bottom:8px">✍️ ဤစကားလုံးကို ၂၀ ကြိမ် ရေးပါ</div>
+    <div class="write-char" id="writeChar">我</div>
+    <div style="font-size:1.1rem;color:var(--yellow);font-weight:700;letter-spacing:3px;margin-bottom:4px" id="writePy">wǒ</div>
+    <div style="font-size:0.9rem;font-family:'Noto Sans Myanmar',sans-serif;margin-bottom:2px" id="writeMy">ကျွန်တော်/ကျွန်မ</div>
+    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px" id="writeEn">I / me</div>
+    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:4px">ရေးပြီး: <span id="repLabel" style="color:var(--yellow);font-weight:700">0</span>/20</div>
+    <div class="rep-dots" id="repDots"></div>
+    <div style="font-size:0.62rem;color:var(--cyan);margin-top:8px;margin-bottom:2px">🔊 Pinyin ကြားသောအကြိမ်: <span id="audioLabel">0</span>/20</div>
+    <div class="audio-dots" id="audioDots"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+      <button class="btn" style="background:rgba(255,45,85,0.15);border:1px solid var(--pink);color:var(--pink);font-size:0.75rem;padding:7px 12px" onclick="playWriteAudio()">🔊 Pinyin ကြားပါ</button>
+      <button class="btn" style="background:rgba(50,173,230,0.12);border:1px solid var(--cyan);color:var(--cyan);font-size:0.75rem;padding:7px 12px" onclick="toggleGuide()">📐 မျဉ်းကွက်</button>
+      <button class="btn" style="background:rgba(191,90,242,0.12);border:1px solid var(--purple);color:var(--purple);font-size:0.75rem;padding:7px 12px" onclick="toggleRef()">👁️ နမူနာ</button>
+    </div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span style="font-size:0.65rem;color:var(--green);letter-spacing:2px;text-transform:uppercase">🖊️ ဒီနေရာတွင် ရေးပါ</span>
+      <span id="repCurrent" style="font-size:0.75rem;color:var(--yellow);font-weight:700">အကြိမ် 1</span>
+    </div>
+    <div class="canvas-wrap">
+      <div class="ref-overlay" id="refOverlay"></div>
+      <canvas id="writeCanvas" width="280" height="280"></canvas>
+    </div>
+    <div style="text-align:center;margin-top:8px;font-size:0.68rem;color:var(--muted)">💡 လက်ချောင်းဖြင့် ရေးပါ • ဘယ်မှညာ • အပေါ်မှအောက်</div>
+  </div>
+  <div class="write-actions">
+    <button class="btn" style="background:rgba(255,45,85,0.15);border:1px solid var(--red);color:var(--red)" onclick="clearCanvas()">🗑️ ဖျက်</button>
+    <button class="btn" style="background:linear-gradient(135deg,var(--green),#00A040);color:#000;font-weight:700;padding:10px 22px" onclick="checkWrite()">✅ စစ်ဆေး</button>
+    <button class="btn" style="background:rgba(255,214,10,0.1);border:1px solid var(--yellow);color:var(--yellow)" onclick="skipWrite()">⏭️ ကျော်</button>
+  </div>
+  <div class="feedback-box" id="writeFeedback"></div>
+  <div class="session-complete" id="sessionDone">
+    <div style="font-size:2.5rem;margin-bottom:6px">🎉</div>
+    <div style="font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:4px">၂၀ ကြိမ် ပြည့်ပြီ!</div>
+    <div id="sessionWord" style="font-family:'Noto Serif SC',serif;font-size:2.5rem;color:var(--yellow);margin-bottom:4px"></div>
+    <div id="sessionInfo" style="font-size:0.8rem;color:var(--muted);margin-bottom:14px"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn" style="background:rgba(191,90,242,0.15);border:1px solid var(--purple);color:var(--purple)" onclick="showReview()">📋 ပြန်ကြည့်</button>
+      <button class="btn" style="background:linear-gradient(135deg,var(--yellow),var(--orange));color:#000;font-weight:700" onclick="nextWriteWord()">နောက်စကားလုံး →</button>
+    </div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px">
+    <div style="font-size:0.65rem;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">📋 ကြောင်းဆွဲ အညွှန်း</div>
+    <div class="stroke-steps" id="writeStrokes"></div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px">
+    <div style="font-size:0.65rem;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">📈 ရေးလေ့ကျင့်မှု မှတ်တမ်း</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
+      <div style="text-align:center;background:rgba(48,209,88,0.08);border-radius:10px;padding:10px">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--green)" id="wsSessions">0</div>
+        <div style="font-size:0.62rem;color:var(--muted)">Session</div>
+      </div>
+      <div style="text-align:center;background:rgba(255,214,10,0.08);border-radius:10px;padding:10px">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--yellow)" id="wsTotal">0</div>
+        <div style="font-size:0.62rem;color:var(--muted)">စုစုပေါင်း ရေး</div>
+      </div>
+      <div style="text-align:center;background:rgba(191,90,242,0.08);border-radius:10px;padding:10px">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--purple)" id="wsWords">0</div>
+        <div style="font-size:0.62rem;color:var(--muted)">စကားလုံး</div>
+      </div>
+    </div>
+    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:6px">ရေးပြီးသောစကားလုံးများ:</div>
+    <div id="practicedList"></div>
+  </div>
+</section>
+<section id="sec-known" class="section">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px">
+    <div style="font-size:0.65rem;color:var(--yellow);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">⭐ သင်ကြားပြီးသော စကားလုံးများ</div>
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:4px">စကားလုံး <span id="knownCount" style="color:var(--yellow);font-weight:700">0</span> လုံး သိပြီ</div>
+    <div style="font-size:0.75rem;color:var(--muted)">💡 စကားလုံးကိုနှိပ်ပါ - မသိတော့ဟု ဖျက်နိုင်သည်</div>
+  </div>
+  <div id="knownWordsGrid" class="known-grid"></div>
+  <div id="knownEmpty" style="text-align:center;padding:40px;color:var(--muted);font-family:'Noto Sans Myanmar',sans-serif;display:none">
+    <div style="font-size:3rem;margin-bottom:10px">📚</div>
+    <div>မှတ်ထားသော စကားလုံး မရှိသေး<br>လေ့လာမည် section တွင် ✓ သိပြီ နှိပ်ပါ</div>
+  </div>
+</section>
+
+<section id="sec-progress" class="section">
+  <div class="prog-grid">
+    <div class="prog-card"><div class="prog-num" style="color:var(--yellow)" id="pgKnown">0</div><div class="prog-label">သိပြီးသော စကားလုံး</div></div>
+    <div class="prog-card"><div class="prog-num" style="color:var(--green)" id="pgCorrect">0</div><div class="prog-label">Quiz မှန်သည်</div></div>
+    <div class="prog-card"><div class="prog-num" style="color:var(--red)" id="pgWrong">0</div><div class="prog-label">မှားသည်</div></div>
+    <div class="prog-card"><div class="prog-num" style="color:var(--purple)" id="pgStreak">0</div><div class="prog-label">ဆက်တိုက်မှန်</div></div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px">
+    <div style="font-size:0.65rem;color:var(--yellow);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">📊 တိုးတက်မှု ရာနှုန်း</div>
+    <div class="ring-chart" id="ringChart" style="--pct:0%"><div class="ring-inner" id="ringPct">0%</div></div>
+    <div style="color:var(--muted);font-size:0.78rem;margin-top:10px">HSK 1 (150) တွင် သင်ကြားပြီးသော အချိုး</div>
+  </div>
+  <div style="display:flex;gap:10px;justify-content:center">
+    <button class="btn" style="background:rgba(255,45,85,0.15);border:1px solid var(--red);color:var(--red)" onclick="resetAll()">🔄 အားလုံး ပြန်စမည်</button>
+  </div>
+</section>
+
+</div>
+</div>
+<script>
+var knownWords = {};
+var writeData = {sessions:0, totalReps:0, words:{}};
+var quizCorrect = 0, quizWrong = 0, streak = 0;
+async function saveAll() {
+  try { await window.storage.set('chengli_known', JSON.stringify(knownWords)); } catch(e) {}
+  try { await window.storage.set('chengli_write', JSON.stringify(writeData)); } catch(e) {}
+  try { await window.storage.set('chengli_stats', JSON.stringify({quizCorrect:quizCorrect,quizWrong:quizWrong,streak:streak})); } catch(e) {}
+}
+async function loadAll() {
+  try { var r=await window.storage.get('chengli_known'); if(r&&r.value) knownWords=JSON.parse(r.value); } catch(e) {}
+  try { var r=await window.storage.get('chengli_write'); if(r&&r.value) writeData=JSON.parse(r.value); } catch(e) {}
+  try { var r=await window.storage.get('chengli_stats'); if(r&&r.value){var s=JSON.parse(r.value);quizCorrect=s.quizCorrect||0;quizWrong=s.quizWrong||0;streak=s.streak||0;} } catch(e) {}
+}
+function speakChinese(text) {
+  try { var u=new SpeechSynthesisUtterance(text); u.lang='zh-CN'; u.rate=0.8; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch(e) {}
+}
+function showTab(name,btn) {
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('sec-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name==='vocab') renderVocab();
+  if(name==='quiz') genQuiz();
+  if(name==='known') renderKnown();
+  if(name==='progress') updateStats();
+  if(name==='write') setTimeout(function(){initCanvas();loadWriteWord();},80);
+}
+function loadWord(idx) {
+  var w=HSK1[idx];
+  document.getElementById('heroChar').textContent=w.cn;
+  document.getElementById('heroPinyin').textContent=w.py;
+  document.getElementById('heroMy').textContent=w.my;
+  document.getElementById('heroEn').textContent=w.en;
+  document.getElementById('etymology').textContent=w.ety||'-';
+  document.getElementById('category').textContent=w.cat||'-';
+  document.getElementById('usage').textContent=w.usage||'-';
+  var pct=Math.round((idx/(HSK1.length-1))*100);
+  document.getElementById('learnProgress').style.width=Math.max(1,pct)+'%';
+  document.getElementById('learnCounter').textContent='စကားလုံး '+(idx+1)+'/'+HSK1.length;
+  var toneNames={1:'ပထမ',2:'ဒုတိယ',3:'တတိယ',4:'စတုတ္ထ',0:'ကြားကပ်'};
+  var badge=document.getElementById('heroBadge');
+  badge.className='tone-badge tone-'+w.tone;
+  badge.textContent=toneNames[w.tone]+' Tone ('+w.tone+')';
+  var ss=document.getElementById('strokeSteps'); ss.innerHTML='';
+  (w.strokes||[]).forEach(function(s,i){var d=document.createElement('div');d.className='stroke-step';d.innerHTML=s+'<span class="snum">'+(i+1)+'</span>';ss.appendChild(d);});
+  var ex=document.getElementById('exampleSentences'); ex.innerHTML='';
+  (w.examples||[]).forEach(function(e){var d=document.createElement('div');d.className='example-card';d.innerHTML='<div class="ex-cn">'+e.cn+'</div><div class="ex-py">'+e.py+'</div><div class="ex-my">'+e.my+'</div>';ex.appendChild(d);});
+}
+function playAudio(){speakChinese(HSK1[currentWordIdx].cn);}
+function nextWord(){if(currentWordIdx<HSK1.length-1){currentWordIdx++;loadWord(currentWordIdx);}}
+function prevWord(){if(currentWordIdx>0){currentWordIdx--;loadWord(currentWordIdx);}}
+function markKnown(){
+  var w=HSK1[currentWordIdx];
+  knownWords[w.cn]={py:w.py,my:w.my,en:w.en,addedAt:new Date().toLocaleDateString()};
+  streak++;
+  saveAll();
+  updateHeaderStats();
+  var btn=event.target;
+  btn.textContent='✓ မှတ်ပြီး!';
+  btn.style.background='rgba(48,209,88,0.3)';
+  setTimeout(function(){btn.textContent='✓ သိပြီ';btn.style.background='rgba(48,209,88,0.15)';nextWord();},800);
+}
+function updateHeaderStats(){
+  document.getElementById('knownNum').textContent=Object.keys(knownWords).length;
+  document.getElementById('streakNum').textContent=streak;
+}
+function renderVocab(){
+  var q=document.getElementById('searchInput').value.toLowerCase();
+  var grid=document.getElementById('vocabGrid'); grid.innerHTML='';
+  HSK1.forEach(function(w,idx){
+    if(currentCat!=='all'&&w.cat!==currentCat) return;
+    if(q&&w.cn.indexOf(q)<0&&w.py.toLowerCase().indexOf(q)<0&&w.my.indexOf(q)<0) return;
+    var d=document.createElement('div');
+    d.className='vocab-card'+(knownWords[w.cn]?' known':'');
+    d.innerHTML='<div class="vc-char">'+w.cn+'</div><div class="vc-py">'+w.py+'</div><div class="vc-my">'+w.my+'</div>';
+    d.onclick=(function(i){return function(){currentWordIdx=i;showTab('learn',document.querySelector('.tab-btn'));loadWord(i);};}) (idx);
+    grid.appendChild(d);
+  });
+}
+function setCat(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderVocab();
+}
+var currentWordIdx=0,currentCat='all',quizMode='cn-to-my',qScore=0,qTotal=0,qStreak=0,quizAnswered=false;
+function setQuizType(type){quizMode=type;qScore=0;qTotal=0;qStreak=0;updateQuizScore();genQuiz();}
+function updateQuizScore(){
+  document.getElementById('qScore').textContent=qScore;
+  document.getElementById('qTotal').textContent=qTotal;
+  document.getElementById('qStreak').textContent=qStreak;
+}
+function genQuiz(){
+  quizAnswered=false;
+  document.getElementById('quizFeedback').innerHTML='';
+  var w=HSK1[Math.floor(Math.random()*HSK1.length)];
+  var typeLabels={'cn-to-my':'တရုတ်→မြန်မာ မည်သည့်အဓိပ္ပာယ်?','my-to-cn':'မြန်မာ→တရုတ် ဘယ်အက္ခရာ?','pinyin':'Pinyin မည်သည်?'};
+  document.getElementById('quizType').textContent=typeLabels[quizMode]||'';
+  if(quizMode==='cn-to-my'){
+    document.getElementById('quizQ').textContent=w.cn;
+    document.getElementById('quizHint').textContent=w.py;
+  } else if(quizMode==='my-to-cn'){
+    document.getElementById('quizQ').style.fontFamily="'Noto Sans Myanmar',sans-serif";
+    document.getElementById('quizQ').style.fontSize='1.5rem';
+    document.getElementById('quizQ').textContent=w.my;
+    document.getElementById('quizHint').textContent='';
+  } else {
+    document.getElementById('quizQ').style.fontFamily="'Noto Serif SC',serif";
+    document.getElementById('quizQ').style.fontSize='3rem';
+    document.getElementById('quizQ').textContent=w.cn;
+    document.getElementById('quizHint').textContent='';
+  }
+  var opts=[w];
+  while(opts.length<4){var r=HSK1[Math.floor(Math.random()*HSK1.length)];if(!opts.find(function(o){return o.cn===r.cn;}))opts.push(r);}
+  opts.sort(function(){return Math.random()-0.5;});
+  var container=document.getElementById('quizOpts'); container.innerHTML='';
+  opts.forEach(function(o){
+    var b=document.createElement('button'); b.className='quiz-opt';
+    if(quizMode==='my-to-cn') b.textContent=o.cn;
+    else if(quizMode==='pinyin') b.textContent=o.py;
+    else b.textContent=o.my;
+    b.onclick=function(){if(!quizAnswered)checkAnswer(b,o.cn,w.cn,w);};
+    container.appendChild(b);
+  });
+}
+function checkAnswer(btn,chosen,correct,w){
+  quizAnswered=true; qTotal++;
+  document.querySelectorAll('.quiz-opt').forEach(function(b){b.disabled=true;});
+  if(chosen===correct){
+    btn.classList.add('correct');
+    qScore++;qStreak++;streak++;
+    knownWords[w.cn]={py:w.py,my:w.my,en:w.en,addedAt:new Date().toLocaleDateString()};
+    document.getElementById('quizFeedback').innerHTML='<span style="color:var(--green)">✅ မှန်ကန်သည်!</span>';
+    showConfetti();
+    saveAll();
+  } else {
+    btn.classList.add('wrong'); qStreak=0;
+    document.querySelectorAll('.quiz-opt').forEach(function(b){
+      if(b.textContent===(quizMode==='my-to-cn'?correct:(quizMode==='pinyin'?w.py:w.my))) b.classList.add('correct');
+    });
+    document.getElementById('quizFeedback').innerHTML='<span style="color:var(--red)">❌ မမှန်ပါ - မှန်ကန်သည်မှာ: <strong>'+correct+'</strong></span>';
+  }
+  updateQuizScore();updateHeaderStats();
+  setTimeout(genQuiz,1800);
+}
+function renderKnown(){
+  var keys=Object.keys(knownWords);
+  document.getElementById('knownCount').textContent=keys.length;
+  var grid=document.getElementById('knownWordsGrid');
+  var empty=document.getElementById('knownEmpty');
+  grid.innerHTML='';
+  if(keys.length===0){empty.style.display='block';return;}
+  empty.style.display='none';
+  keys.forEach(function(cn){
+    var w=knownWords[cn];
+    var d=document.createElement('div'); d.className='known-chip';
+    d.innerHTML='<div class="kc-char">'+cn+'</div><div class="kc-py">'+w.py+'</div><div class="kc-my">'+w.my+'</div>';
+    d.onclick=(function(c){return function(){
+      if(confirm(c+' ကို သင်ကြားပြီးစာရင်းမှ ဖျက်မည်လား?')){delete knownWords[c];saveAll();updateHeaderStats();renderKnown();}
+    };})(cn);
+    grid.appendChild(d);
+  });
+}
+function updateStats(){
+  var k=Object.keys(knownWords).length;
+  document.getElementById('pgKnown').textContent=k;
+  document.getElementById('pgCorrect').textContent=qScore;
+  document.getElementById('pgWrong').textContent=qTotal-qScore;
+  document.getElementById('pgStreak').textContent=streak;
+  var pct=Math.round((k/HSK1.length)*100);
+  document.getElementById('ringChart').style.setProperty('--pct',pct+'%');
+  document.getElementById('ringPct').textContent=pct+'%';
+}
+function resetAll(){
+  if(confirm('အားလုံး ပြန်စမည်လား?')){
+    knownWords={};writeData={sessions:0,totalReps:0,words:{}};quizCorrect=0;quizWrong=0;streak=0;qScore=0;qTotal=0;qStreak=0;
+    saveAll();updateHeaderStats();updateStats();updateWriteStats();
+  }
+}
+var canvas,ctx,isDrawing=false,lastX=0,lastY=0,canvasHasDrawing=false;
+var guideOn=false,refOn=false;
+var writeIdx=0,writeOrder=[],currentRep=0,audioHeard=0;
+var sessionSnaps=[];
+function initCanvas(){
+  canvas=document.getElementById('writeCanvas');
+  if(!canvas) return;
+  ctx=canvas.getContext('2d');
+  var maxW=Math.min(280,window.innerWidth-64);
+  canvas.width=maxW;canvas.height=maxW;
+  canvas.style.width=maxW+'px';canvas.style.height=maxW+'px';
+  var nc=canvas.cloneNode(true);
+  canvas.parentNode.replaceChild(nc,canvas);
+  canvas=nc;ctx=canvas.getContext('2d');
+  clearCanvas();
+  canvas.addEventListener('mousedown',function(e){isDrawing=true;canvasHasDrawing=true;var p=getPos(e);lastX=p.x;lastY=p.y;});
+  canvas.addEventListener('mousemove',function(e){if(!isDrawing)return;var p=getPos(e);drawStroke(lastX,lastY,p.x,p.y);lastX=p.x;lastY=p.y;});
+  canvas.addEventListener('mouseup',function(){isDrawing=false;});
+  canvas.addEventListener('mouseleave',function(){isDrawing=false;});
+  canvas.addEventListener('touchstart',function(e){e.preventDefault();isDrawing=true;canvasHasDrawing=true;var p=getTPos(e);lastX=p.x;lastY=p.y;},{passive:false});
+  canvas.addEventListener('touchmove',function(e){e.preventDefault();if(!isDrawing)return;var p=getTPos(e);drawStroke(lastX,lastY,p.x,p.y);lastX=p.x;lastY=p.y;},{passive:false});
+  canvas.addEventListener('touchend',function(){isDrawing=false;});
+}
+function getPos(e){var r=canvas.getBoundingClientRect(),sx=canvas.width/r.width,sy=canvas.height/r.height;return {x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy};}
+function getTPos(e){var r=canvas.getBoundingClientRect(),t=e.touches[0],sx=canvas.width/r.width,sy=canvas.height/r.height;return {x:(t.clientX-r.left)*sx,y:(t.clientY-r.top)*sy};}
+function drawStroke(x1,y1,x2,y2){ctx.strokeStyle='#FFF';ctx.lineWidth=Math.max(canvas.width/38,5);ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+function clearCanvas(){
+  if(!canvas||!ctx) return;
+  ctx.fillStyle='#0A0018';ctx.fillRect(0,0,canvas.width,canvas.height);
+  if(guideOn) drawGuide();
+  canvasHasDrawing=false;
+  document.getElementById('writeFeedback').style.display='none';
+}
+function drawGuide(){
+  var w=canvas.width,h=canvas.height;
+  ctx.strokeStyle='rgba(255,214,10,0.13)';ctx.lineWidth=1;ctx.setLineDash([4,6]);
+  ctx.beginPath();ctx.moveTo(w/2,0);ctx.lineTo(w/2,h);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+  ctx.strokeStyle='rgba(191,90,242,0.2)';ctx.lineWidth=2;ctx.setLineDash([]);
+  ctx.strokeRect(3,3,w-6,h-6);ctx.setLineDash([]);
+}
+function toggleGuide(){guideOn=!guideOn;clearCanvas();}
+function toggleRef(){
+  refOn=!refOn;
+  var o=document.getElementById('refOverlay');
+  o.textContent=document.getElementById('writeChar').textContent;
+  o.style.display=refOn?'block':'none';
+}
+function loadWriteWord(){
+  if(writeOrder.length===0) writeOrder=HSK1.map(function(_,i){return i;}).sort(function(){return Math.random()-0.5;});
+  currentRep=0;audioHeard=0;sessionSnaps=[];
+  refOn=false;guideOn=false;
+  document.getElementById('refOverlay').style.display='none';
+  var w=HSK1[writeOrder[writeIdx%writeOrder.length]];
+  document.getElementById('writeChar').textContent=w.cn;
+  document.getElementById('writePy').textContent=w.py;
+  document.getElementById('writeMy').textContent=w.my;
+  document.getElementById('writeEn').textContent=w.en;
+  document.getElementById('refOverlay').textContent=w.cn;
+  document.getElementById('sessionDone').style.display='none';
+  document.getElementById('writeFeedback').style.display='none';
+  var ss=document.getElementById('writeStrokes');ss.innerHTML='';
+  (w.strokes||[]).forEach(function(s,i){var d=document.createElement('div');d.className='stroke-step';d.innerHTML=s+'<span class="snum">'+(i+1)+'</span>';ss.appendChild(d);});
+  renderRepDots();renderAudioDots();
+  clearCanvas();
+  updateWriteStats();
+  setTimeout(function(){speakChinese(w.cn);if(audioHeard<20){audioHeard++;renderAudioDots();document.getElementById('audioLabel').textContent=audioHeard;}},600);
+}
+function renderRepDots(){
+  var d=document.getElementById('repDots');d.innerHTML='';
+  for(var i=0;i<20;i++){
+    var dot=document.createElement('div');
+    dot.className='rep-dot'+(i<currentRep?' done':i===currentRep?' current':'');
+    d.appendChild(dot);
+  }
+  document.getElementById('repLabel').textContent=currentRep;
+  document.getElementById('repCurrent').textContent=currentRep>=20?'✅ ပြည့်ပြီ':'အကြိမ် '+(currentRep+1);
+}
+function renderAudioDots(){
+  var d=document.getElementById('audioDots');d.innerHTML='';
+  for(var i=0;i<20;i++){
+    var dot=document.createElement('div');
+    dot.className='audio-dot'+(i<audioHeard?' heard':'');
+    d.appendChild(dot);
+  }
+}
+function playWriteAudio(){
+  speakChinese(document.getElementById('writeChar').textContent);
+  if(audioHeard<20){audioHeard++;renderAudioDots();document.getElementById('audioLabel').textContent=audioHeard;}
+}
+function nextWriteWord(){writeIdx++;loadWriteWord();}
+function skipWrite(){nextWriteWord();}
+function checkWrite(){
+  if(!canvasHasDrawing){showFb('⚠️','Canvas ပေါ်တွင် ရေးပါ!','var(--orange)');return;}
+  showFb('⏳','AI စစ်ဆေးနေသည်...','var(--muted)');
+  var img=canvas.toDataURL('image/png');
+  var b64=img.replace('data:image/png;base64,','');
+  var ch=document.getElementById('writeChar').textContent;
+  var py=document.getElementById('writePy').textContent;
+  var my=document.getElementById('writeMy').textContent;
+  callAI(b64,ch,py,my);
+}
+function callAI(b64,ch,py,my){
+  var prompt='You are a Chinese handwriting teacher. Student wrote: "'+ch+'" ('+py+', '+my+'). White strokes on dark bg. JSON only: {"score":0-100,"recognized":"char or empty","correct":true/false,"feedback_my":"1-2 Myanmar sentences","tip_my":"one Myanmar tip"}';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/png',data:b64}},{type:'text',text:prompt}]}]})
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(data.error) throw new Error(data.error.message||'API error');
+    var txt=(data.content||[]).map(function(i){return i.text||'';}).join('');
+    var s=txt.indexOf('{'),e=txt.lastIndexOf('}')+1;
+    if(s<0||e<=s) throw new Error('No JSON');
+    var result=JSON.parse(txt.substring(s,e));
+    showAIResult(result,ch);
+  })
+  .catch(function(){showManualCheck(ch,py);});
+}
+function showAIResult(r,ch){
+  var sc=r.score||0;
+  window._lastRepScore=sc;
+  var col=sc>=80?'var(--green)':sc>=60?'var(--yellow)':'var(--red)';
+  var em=sc>=80?'🌟':sc>=60?'👍':'✏️';
+  var html='<div class="feedback-anim"><div style="font-size:2rem;margin-bottom:4px">'+em+'</div>'
+    +'<div style="font-size:2rem;font-weight:900;color:'+col+';margin-bottom:8px">'+sc+'/100</div>';
+  if(r.recognized) html+='<div style="font-size:0.75rem;color:var(--muted);margin-bottom:6px">မြင်သောအက္ခရာ: <span style="font-family:\'Noto Serif SC\',serif;font-size:1.2rem;color:var(--text)">'+r.recognized+'</span> '+(r.recognized===ch?'✅':'')+'</div>';
+  html+='<div style="font-size:0.85rem;line-height:1.7;color:var(--text);font-family:\'Noto Sans Myanmar\',sans-serif;margin-bottom:8px">'+(r.feedback_my||'')+'</div>';
+  if(r.tip_my) html+='<div style="background:rgba(255,214,10,0.08);border-left:3px solid var(--yellow);padding:8px;border-radius:6px;font-size:0.78rem;color:var(--yellow);text-align:left;margin-bottom:10px">💡 '+r.tip_my+'</div>';
+  html+='<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'
+    +'<button class="btn" style="background:rgba(255,45,85,0.15);border:1px solid var(--red);color:var(--red);font-size:0.75rem" onclick="clearCanvas()">🗑️ ထပ်ရေး</button>'
+    +'<button class="btn" style="background:linear-gradient(135deg,var(--yellow),var(--orange));color:#000;font-size:0.8rem;font-weight:700" onclick="recordRep()">✅ မှတ်တမ်းတင်၍ ဆက်ရေး</button>'
+    +'</div></div>';
+  var fb=document.getElementById('writeFeedback');
+  fb.innerHTML=html;fb.style.display='block';
+  if(sc>=60) speakChinese(document.getElementById('writeChar').textContent);
+}
+function showManualCheck(ch,py){
+  var html='<div style="margin-bottom:8px;font-size:1.1rem">🔍 နမူနာနှင့် နှိုင်းယှဉ်ကြည့်ပါ</div>'
+    +'<div style="font-family:\'Noto Serif SC\',serif;font-size:3rem;color:var(--yellow);margin-bottom:8px">'+ch+'</div>'
+    +'<div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px">'+py+'</div>'
+    +'<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'
+    +'<button class="btn" style="background:rgba(48,209,88,0.15);border:1px solid var(--green);color:var(--green);font-size:0.8rem" onclick="window._lastRepScore=85;recordRep()">✅ ကောင်းသည်</button>'
+    +'<button class="btn" style="background:rgba(255,214,10,0.15);border:1px solid var(--yellow);color:var(--yellow);font-size:0.8rem" onclick="window._lastRepScore=65;recordRep()">👍 ဆက်ကြိုးစား</button>'
+    +'<button class="btn" style="background:rgba(255,45,85,0.15);border:1px solid var(--red);color:var(--red);font-size:0.8rem" onclick="clearCanvas()">↩️ ထပ်ရေး</button>'
+    +'</div>';
+  var fb=document.getElementById('writeFeedback');
+  fb.innerHTML=html;fb.style.display='block';
+}
+function recordRep(){
+  var sc=window._lastRepScore||70;
+  sessionSnaps.push({score:sc,snap:canvas.toDataURL('image/png')});
+  currentRep++;
+  if(audioHeard<20){audioHeard++;renderAudioDots();document.getElementById('audioLabel').textContent=audioHeard;speakChinese(document.getElementById('writeChar').textContent);}
+  renderRepDots();clearCanvas();
+  document.getElementById('writeFeedback').style.display='none';
+  if(currentRep>=20) finishSession();
+}
+function finishSession(){
+  var ch=document.getElementById('writeChar').textContent;
+  var avg=sessionSnaps.length?Math.round(sessionSnaps.reduce(function(a,b){return a+b.score;},0)/sessionSnaps.length):0;
+  writeData.sessions++;writeData.totalReps+=20;
+  if(!writeData.words[ch]) writeData.words[ch]={sessions:0,scores:[]};
+  writeData.words[ch].sessions++;writeData.words[ch].scores.push(avg);
+  if(writeData.words[ch].scores.length>10) writeData.words[ch].scores.shift();
+  saveAll();updateWriteStats();
+  document.getElementById('sessionDone').style.display='block';
+  document.getElementById('sessionWord').textContent=ch;
+  document.getElementById('sessionInfo').textContent='ပျမ်းမျှ: '+avg+'/100 • Pinyin ကြားသော: '+audioHeard+'/20';
+  showConfetti();
+  var cc=0;var fn=function(){if(cc>=3)return;speakChinese(document.getElementById('writeChar').textContent);cc++;setTimeout(fn,1800);};setTimeout(fn,400);
+}
+function showReview(){
+  var fb=document.getElementById('writeFeedback');
+  var html='<div style="font-size:0.65rem;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">📋 ၂၀ ကြိမ် မှတ်တမ်း</div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;">';
+  sessionSnaps.forEach(function(r,i){
+    var col=r.score>=80?'#30D158':r.score>=60?'#FFD60A':'#FF2D55';
+    html+='<div style="text-align:center"><img src="'+r.snap+'" style="width:100%;border-radius:5px;border:1.5px solid '+col+'"/><div style="font-size:0.6rem;color:'+col+';font-weight:700">'+r.score+'</div></div>';
+  });
+  html+='</div>';
+  var fb=document.getElementById('writeFeedback');
+  fb.innerHTML=html;fb.style.display='block';
+}
+function updateWriteStats(){
+  document.getElementById('wsSessions').textContent=writeData.sessions;
+  document.getElementById('wsTotal').textContent=writeData.totalReps;
+  document.getElementById('wsWords').textContent=Object.keys(writeData.words).length;
+  var list=document.getElementById('practicedList');list.innerHTML='';
+  var keys=Object.keys(writeData.words);
+  if(keys.length===0){list.innerHTML='<div style="font-size:0.72rem;color:var(--muted)">မှတ်တမ်းမရှိသေး</div>';return;}
+  keys.forEach(function(cn){
+    var d=document.createElement('span');d.className='practiced-chip';d.textContent=cn;
+    d.onclick=(function(c){return function(){var wi=HSK1.findIndex(function(h){return h.cn===c;});if(wi>=0){var oi=writeOrder.indexOf(wi);if(oi<0){writeOrder.unshift(wi);writeIdx=0;}else{writeIdx=oi;}loadWriteWord();}};}) (cn);
+    list.appendChild(d);
+  });
+}
+function showFb(icon,msg,color){
+  var fb=document.getElementById('writeFeedback');
+  fb.innerHTML='<div style="font-size:1.3rem;margin-bottom:6px">'+icon+'</div><div style="color:'+color+';font-size:0.85rem;font-family:\'Noto Sans Myanmar\',sans-serif;">'+msg+'</div>';
+  fb.style.display='block';
+}
+function showConfetti(){
+  var emojis=['🎉','✨','⭐','🌟','💫','🎊'];
+  for(var i=0;i<12;i++){
+    (function(){
+      var el=document.createElement('div');el.className='confetti-piece';
+      el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      el.style.left=Math.random()*100+'%';el.style.top=(40+Math.random()*40)+'%';
+      el.style.animationDelay=(Math.random()*0.6)+'s';
+      document.body.appendChild(el);
+      setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},2000);
+    })();
+  }
+}
+document.getElementById('knownNum').textContent='...';
+loadAll().then(function(){
+  loadWord(0);updateHeaderStats();updateWriteStats();updateStats();
+  var k=Object.keys(knownWords).length;
+  if(k>0){
+    var toast=document.createElement('div');
+    toast.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(48,209,88,0.9);color:#000;padding:10px 20px;border-radius:20px;font-family:\'Noto Sans Myanmar\',sans-serif;font-size:0.82rem;z-index:9999;font-weight:700;';
+    toast.textContent='✓ '+k+' စကားလုံး မှတ်တမ်းမှ ပြန်ရယူပြီ';
+    document.body.appendChild(toast);
+    setTimeout(function(){if(toast.parentNode)toast.parentNode.removeChild(toast);},3000);
+  }
+});
+</script>
+</body>
+</html>
